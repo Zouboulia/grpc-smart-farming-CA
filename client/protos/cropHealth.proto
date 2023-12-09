@@ -1,8 +1,10 @@
 syntax = "proto3";
 
+package farming;
+
 // Define the service: This will be a crop health monitoring service based on live satellite images
 
-service SatelliteCropHealthMonitoringService {
+service SatelliteCropHealthMonitoring {
     // Unary RPC to analyze live satellite images and provide general crop health informations to farmer (client)
     rpc AnalyzeCropHealth (CropHealthRequest) returns (CropHealthResponse);
 
