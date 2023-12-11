@@ -2,34 +2,29 @@
 var grpc = require("@grpc/grpc-js");
 var protoLoader = require("@grpc/proto-loader");
 
+//this basically will require the functions from the satelliteCropHealthService.js file and import them here
+var {
+  AnalyzeCropHealth,
+  MonitorBugInfestation,
+  MonitorSunlightExposure,
+} = require("./satelliteCropHealthService.js");
+
 // Load the protobuf definition
-var PROTO_PATH = __dirname + "/protos/cropHealth.proto";
-var packageDefinition = protoLoader.loadSync(PROTO_PATH);
+var PROTO_PATH = __dirname + "/../protos/cropHealth.proto";
+var packageDefinition = protoLoader.loadSync(PROTO_PATH, { keepCase: true });
 var cropHealth_proto = grpc.loadPackageDefinition(packageDefinition).farming;
 
 // Create a gRPC server
 var server = new grpc.Server();
 
-// Implement the RPC method AnalyzeCropHealth as defined in the proto file
+// Add SatelliteCropHealthService
 server.addService(cropHealth_proto.SatelliteCropHealthMonitoring.service, {
-  AnalyzeCropHealth: analyzeCropHealth,
+  AnalyzeCropHealth,
+  MonitorBugInfestation,
+  MonitorSunlightExposure,
 });
 
-// Define the AnalyzeCropHealth RPC method
-function analyzeCropHealth(call, callback) {
-  console.log("Received request:", call.request); // Log the request
-
-  var location = call.request.location;
-  var cropType = call.request.crop_type;
-
-  // For testing, crop always healthy
-  var healthStatus = "Healthy";
-
-  // Respond with health status
-  var response = { healthStatus: healthStatus };
-  console.log("Server Response:", response); // Log the response
-  callback(null, response);
-}
+// here I will add other services as I create then (uvLight and soilPH, from proto files)
 
 // Start the server
 server.bindAsync(
