@@ -84,12 +84,12 @@ function MonitorSunlightExposure(call, callback) {
   // some logic to determine sunlight exposure based on location and orientation
   //this is just random data
   if (location == "A" && direction == "North") {
-    var sunlight_exposure = Math.random(1.0, 10.0); //random number between 1 and 10
+    var sunlight_exposure = Math.floor(Math.random() * 10) + 1; //random number between 1 and 10
   } else if (location == "B" && direction == "South") {
-    var sunlight_exposure = Math.random(1.0, 10.0);
+    var sunlight_exposure = Math.floor(Math.random() * 10) + 1;
   } else {
     //ending the ifs here, as there is no need to check for the other two combinations, since the result is just random
-    var sunlight_exposure = Math.random(1.0, 10.0);
+    var sunlight_exposure = Math.floor(Math.random() * 10) + 1;
   }
 
   // respond with sunlight exposure

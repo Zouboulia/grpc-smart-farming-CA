@@ -9,13 +9,30 @@ var {
   MonitorSunlightExposure,
 } = require("./satelliteCropHealthService.js");
 
+//require the second service: pHMonitorService.js
+var { MonitorSoilpH } = require("./pHMonitorService.js");
+
+//require the third service: uvLightService.js
+
 // Load the protobuf definition
-var PROTO_PATH = __dirname + "/../protos/cropHealth.proto";
-var packageDefinition = protoLoader.loadSync(PROTO_PATH, { keepCase: true });
-var cropHealth_proto = grpc.loadPackageDefinition(packageDefinition).farming;
+var SATELLITE_PROTO_PATHPROTO_PATH = __dirname + "/../protos/cropHealth.proto";
+var SOIL_PROTO_PATH = __dirname + "/../protos/soilPH.proto"; //second proto file for pHMonitoring service
+var SatpackageDefinition = protoLoader.loadSync(
+  SATELLITE_PROTO_PATHPROTO_PATH,
+  { keepCase: true }
+);
+var cropHealth_proto = grpc.loadPackageDefinition(SatpackageDefinition).farming;
+
+//add second proto file for pHMonitoring service
+var SoilPHpackageDefinition = protoLoader.loadSync(SOIL_PROTO_PATH, {
+  keepCase: true,
+});
+var soilPH_proto = grpc.loadPackageDefinition(SoilPHpackageDefinition).farming;
 
 // Create a gRPC server
 var server = new grpc.Server();
+
+// here I will add services as I create then (uvLight and soilPH, from proto files)
 
 // Add SatelliteCropHealthService
 server.addService(cropHealth_proto.SatelliteCropHealthMonitoring.service, {
@@ -24,9 +41,12 @@ server.addService(cropHealth_proto.SatelliteCropHealthMonitoring.service, {
   MonitorSunlightExposure,
 });
 
-// here I will add other services as I create then (uvLight and soilPH, from proto files)
+//add pHMonitorService
+server.addService(soilPH_proto.pHMonitorService.service, {
+  MonitorSoilpH, //fundtion from pHMonitorService.js
+});
 
-// Start the server
+// Start the server. This starts the server for all services since they are required above
 server.bindAsync(
   "0.0.0.0:40000",
   grpc.ServerCredentials.createInsecure(),
