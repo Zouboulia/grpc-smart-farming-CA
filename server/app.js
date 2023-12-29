@@ -2,7 +2,7 @@
 var grpc = require("@grpc/grpc-js");
 var protoLoader = require("@grpc/proto-loader");
 
-//this basically will require the functions from the satelliteCropHealthService.js file and import them here
+//this  will require the functions from the satelliteCropHealthService.js file and import them here
 var {
   AnalyzeCropHealth,
   MonitorBugInfestation,
@@ -13,21 +13,34 @@ var {
 var { MonitorSoilpH } = require("./pHMonitorService.js");
 
 //require the third service: uvLightService.js
+var { MonitorUvLight } = require("./uVLightService.js");
 
-// Load the protobuf definition
-var SATELLITE_PROTO_PATHPROTO_PATH = __dirname + "/../protos/cropHealth.proto";
+//load paths to the proto files
+var SATELLITE_PROTO_PATH = __dirname + "/../protos/cropHealth.proto";
 var SOIL_PROTO_PATH = __dirname + "/../protos/soilPH.proto"; //second proto file for pHMonitoring service
-var SatpackageDefinition = protoLoader.loadSync(
-  SATELLITE_PROTO_PATHPROTO_PATH,
-  { keepCase: true }
-);
-var cropHealth_proto = grpc.loadPackageDefinition(SatpackageDefinition).farming;
+var UV_PROTO_PATH = __dirname + "/../protos/uvLight.proto"; //third proto file for uvLightService
 
-//add second proto file for pHMonitoring service
+//load the proto definitions
+var SatpackageDefinition = protoLoader.loadSync(SATELLITE_PROTO_PATH, {
+  keepCase: true,
+});
+
+var UVLightpackageDefinition = protoLoader.loadSync(UV_PROTO_PATH, {
+  keepCase: true,
+});
+
 var SoilPHpackageDefinition = protoLoader.loadSync(SOIL_PROTO_PATH, {
   keepCase: true,
 });
+
+//load the gRPC packages
+var cropHealth_proto = grpc.loadPackageDefinition(SatpackageDefinition).farming;
+
 var soilPH_proto = grpc.loadPackageDefinition(SoilPHpackageDefinition).farming;
+
+var uvLight_proto = grpc.loadPackageDefinition(
+  UVLightpackageDefinition
+).farming;
 
 // Create a gRPC server
 var server = new grpc.Server();
@@ -44,6 +57,11 @@ server.addService(cropHealth_proto.SatelliteCropHealthMonitoring.service, {
 //add pHMonitorService
 server.addService(soilPH_proto.pHMonitorService.service, {
   MonitorSoilpH, //fundtion from pHMonitorService.js
+});
+
+//add UvLightMonitoringService
+server.addService(uvLight_proto.UvLightMonitoringService.service, {
+  MonitorUvLight, //function from uvLightService.js
 });
 
 // Start the server. This starts the server for all services since they are required above
