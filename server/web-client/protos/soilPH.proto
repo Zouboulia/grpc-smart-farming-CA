@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package farming;
+
+// Define the service: This will be a crop health monitoring service based on pH monitoring sensors 
+
+service pHMonitorService {
+  // Server-side streaming RPC to monitor soil pH
+  rpc MonitorSoilpH (SoilpHRequest) returns (stream SoilpHResponse);
+
+   // Client-side streaming RPC to trigger automated soil pH adjustments
+  rpc AdjustSoilpH (stream AdjustSoilpHRequest) returns (AdjustSoilpHResponse);
+}
+
+// Request message for monitoring soil pH
+message SoilpHRequest {
+}
+
+// Response message for monitoring soil pH
+message SoilpHResponse {
+  // returns the pH levels of the soil
+  float soil_pH = 1;
+
+  // additional information about the pH change if any
+  string pH_change_info = 2;
+}
+
+// Request message for client-side streaming to trigger automated soil pH adjustments
+message AdjustSoilpHRequest {
+  // instructions for adjusting soil pH
+  string adjustment_instructions = 1;
+}
+
+// Response message for adjusting soil pH
+message AdjustSoilpHResponse {
+  // acknowledgment of the adjustments
+  string acknowledgment = 1;
+}

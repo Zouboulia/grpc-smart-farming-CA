@@ -12,8 +12,6 @@ var server = new grpc.Server();
 
 // Implement the RPC method AnalyzeCropHealth as defined in the proto file
 server.addService(cropHealth_proto.SatelliteCropHealthMonitoring.service, {
-  //you only need to specify the name of the function here once because the key and value are the same
-  //server implents all the functions in the proto file from service SatelliteCropHealthMonitoring
   AnalyzeCropHealth,
   MonitorBugInfestation,
   MonitorSunlightExposure,
@@ -21,13 +19,40 @@ server.addService(cropHealth_proto.SatelliteCropHealthMonitoring.service, {
 
 // Define the AnalyzeCropHealth RPC method
 function AnalyzeCropHealth(call, callback) {
-  console.log("Received request:", call.request); // Log the request
+  console.log("Function started!"); // Log to check if the function is started
+
+  if (!call.request) {
+    console.error("Request is undefined!"); // Log an error if there is no request made
+    callback({
+      code: grpc.status.INVALID_ARGUMENT,
+      details: "Invalid request data",
+    });
+    return;
+  }
+
+  console.log("Request exists:", call.request); // Log the request
+  console.log("Request Location:", call.request.location); // Log the location
+  console.log("Request Crop Type:", call.request.crop_type); // Log the crop type
+
+  //if the request is missing required data, then throw error
+  if (!call.request || !call.request.location || !call.request.crop_type) {
+    // Handle the case where required data is missing
+    console.error("Invalid request:", call.request);
+    callback({
+      code: grpc.status.INVALID_ARGUMENT,
+      details: "Invalid request data",
+    });
+    return;
+  }
 
   var location = call.request.location;
   var crop_type = call.request.crop_type;
 
   // some logic to determine health status based on location and crop type
   var health_status;
+
+  // Log the health status in the server console
+  console.log("Health Status:", health_status);
 
   switch (location) {
     //if location is A
@@ -52,9 +77,9 @@ function AnalyzeCropHealth(call, callback) {
   console.log("Health Status:", health_status);
 
   // Respond with health status
-  var response = { health_status }; //here I changed the key to match the proto file as it was wrong in earlier versions of the code
+  var response = { health_status: health_status }; // Create the response
   console.log("Server Response:", response); // Log the response to be sent to the client
-  callback(null, response); // Send the response back to the client
+  callback(null, response); // Send the response
 }
 
 function MonitorBugInfestation(call, callback) {

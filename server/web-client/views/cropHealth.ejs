@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <form id="cropHealthForm">
+      <label for="locationHealth">Location of the crop field (A or B):</label>
+      <input type="text" id="locationHealth" name="locationHealth" required />
+
+      <label for="cropTypeHealth">Type of crop (Rice, Wheat, or Corn):</label>
+      <input type="text" id="cropTypeHealth" name="crop_typeHealth" required />
+
+      <button type="button" onclick="AnalyzeCropHealth()">
+        Analyze Crop Health
+      </button>
+    </form>
+
+    <!-- <form id="BugInfestationForm">
+      <label for="locationBug">Location of the crop field (A or B):</label>
+      <input type="text" id="locationBug" name="locationBug" required />
+
+      <label for="cropTypeBug">Type of crop (Rice, Wheat, or Corn):</label>
+      <input type="text" id="cropTypeBug" name="crop_typeBug" required />
+
+      <button type="button" onclick="MonitorBugInfestation()">
+        Monitor Bug Infestation
+      </button>
+    </form>
+
+    <form id="SunlightForm">
+      <label for="locationLight">Location of the crop field (A or B):</label>
+      <input type="text" id="locationLight" name="locationLight" required />
+
+      <label for="cropTypeLight">Type of crop (Rice, Wheat, or Corn):</label>
+      <input type="text" id="cropTypeLight" name="crop_typeLight" required />
+
+      <button type="button" onclick="MonitorSunlightExposure()">
+        Monitor Sunlight Exposure
+      </button>
+    </form> -->
+
+    <button onclick="window.location.href='/'">Back to Home</button>
+
+    <script>
+      async function AnalyzeCropHealth() {
+        const location = document.getElementById("locationHealth").value;
+        const crop_type = document.getElementById("cropTypeHealth").value;
+
+        // Log the entered values to the console
+        console.log("Location:", location);
+        console.log("Crop Type:", crop_type);
+
+        fetch("/analyzeCropHealthData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ location, crop_type }),
+        })
+          .then((response) => response.json())
+          .then((result) => console.log(result))
+          .catch((error) => console.error("Error:", error));
+      }
+
+      // async function MonitorBugInfestation() {
+      //   const form = document.getElementById("BugInfestationForm");
+      //   const formData = new FormData(form);
+
+      //   console.log("Location:", locationBug);
+      //   console.log("Crop Type:", crop_typeBug);
+
+      //   fetch("/monitorBugInfestationData", {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify(Object.fromEntries(formData)),
+      //   })
+      //     .then((response) => response.json())
+      //     .then((result) => console.log(result))
+      //     .catch((error) => console.error("Error:", error));
+      // }
+
+      // async function MonitorSunlightExposure() {
+      //   const form = document.getElementById("SunlightForm");
+      //   const formData = new FormData(form);
+
+      //   fetch("/monitorSunlightExposureData", {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify(Object.fromEntries(formData)),
+      //   })
+      //     .then((response) => response.json())
+      //     .then((result) => console.log(result))
+      //     .catch((error) => console.error("Error:", error));
+      // }
+    </script>
+  </body>
+</html>
