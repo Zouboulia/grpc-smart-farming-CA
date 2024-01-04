@@ -9,6 +9,7 @@
     <p>Welcome to <%= title %></p>
     <button onclick="startMonitorSoilPH()">Start Soil PH monitoring</button>
 
+    <div id="uvLightResponse"></div>
     <br />
 
     <button onclick="window.location.href='/'">Back to Home</button>
@@ -31,8 +32,18 @@
           body: JSON.stringify({ location, crop_type }),
         })
           .then((response) => response.json())
-          .then((result) => console.log(result))
-          .catch((error) => console.error("Error:", error));
+          .then((result) => {
+            console.log(result);
+            document.getElementById("uvLightResponse").innerHTML =
+              "<p>Soil PH Monitoring Response: " +
+              JSON.stringify(result) +
+              "</p>";
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            document.getElementById("uvLightResponse").innerHTML =
+              "<p>Error: An error occurred.</p>";
+          });
       }
     </script>
   </body>

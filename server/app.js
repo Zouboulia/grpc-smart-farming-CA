@@ -10,7 +10,7 @@ var {
 } = require("./satelliteCropHealthService.js");
 
 //require the second service: pHMonitorService.js
-var { MonitorSoilpH } = require("./pHMonitorService.js");
+var { MonitorSoilpH, AdjustSoilpH } = require("./pHMonitorService.js");
 
 //require the third service: uvLightService.js
 var { MonitorUvLight } = require("./uVLightService.js");
@@ -56,7 +56,8 @@ server.addService(cropHealth_proto.SatelliteCropHealthMonitoring.service, {
 
 //add pHMonitorService
 server.addService(soilPH_proto.pHMonitorService.service, {
-  MonitorSoilpH, //fundtion from pHMonitorService.js
+  MonitorSoilpH,
+  AdjustSoilpH, //fundtion from pHMonitorService.js
 });
 
 //add UvLightMonitoringService

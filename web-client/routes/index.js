@@ -85,23 +85,41 @@ router.get("/monitorSoilPH", async (req, res) => {
 
 router.post("/monitorSoilPHData", function (req, res) {
   const { location, crop_type } = req.body;
-  clientPH.MonitorSoilpH(
-    {
+
+  clientPH
+    .MonitorSoilpH({
       location: location,
       crop_type: crop_type,
-    },
-    (err, response) => {
-      if (err) {
-        console.error("Error:", err);
-        res.status(500).json({
-          error: "An error occured, please make sure to enter valid data",
-        });
-      } else {
-        console.log("Response:", response);
-        res.json(response);
-      }
-    }
-  );
+    })
+    .on("data", (response) => {
+      console.log("Response: ", response); //if no error, log the response to the console
+      res.json(response);
+    })
+    // handle errors
+    .on("error", (err) => {
+      console.error("Error:", err);
+      res.status(500).json({
+        error: "An error occurred",
+      });
+    })
+    // handle end of stream
+    .on("end", () => {
+      console.log("Stream ended");
+      res.end();
+    });
+
+  // //call adjust soil pH function and send data to client
+  // clientPH.AdjustSoilpH({ adjustment_instructions: "yes" }, (err, response) => {
+  //   if (err) {
+  //     console.error("Error:", err);
+  //     res.status(500).json({
+  //       error: "An error occured, please make sure to enter valid data",
+  //     });
+  //   } else {
+  //     console.log("Response:", response);
+  //     res.json(response);
+  //   }
+  // });
 });
 
 // get monitor sunlight exposure page and call function
@@ -112,23 +130,28 @@ router.get("/monitorUVLight", async (req, res) => {
 
 router.post("/monitorUVLightData", function (req, res) {
   const { location, crop_type } = req.body;
-  clientUV.MonitorUvLight(
-    {
+
+  clientUV
+    .MonitorUvLight({
       location: location,
       crop_type: crop_type,
-    },
-    (err, response) => {
-      if (err) {
-        console.error("Error:", err);
-        res.status(500).json({
-          error: "An error occured, please make sure to enter valid data",
-        });
-      } else {
-        console.log("Response:", response);
-        res.json(response);
-      }
-    }
-  );
+    })
+    .on("data", (response) => {
+      console.log("Response: ", response); //if no error, log the response to the console
+      res.json(response);
+    })
+    //handle errors
+    .on("error", (err) => {
+      console.error("Error: ", err);
+      res.status(500).json({
+        error: "An error occurred",
+      });
+    })
+    //handle end of stream
+    .on("end", () => {
+      console.log("Stream ended");
+      res.end();
+    });
 });
 
 // export the router

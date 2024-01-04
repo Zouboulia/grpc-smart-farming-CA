@@ -10,12 +10,8 @@ function MonitorSoilpH(call) {
     if (soil_pH > 5) {
       pH_change_info =
         "The soil pH is too high. Please add more fertilizer to the soil.";
-    }
-
-    //if the soil_pH is less than or equal to 5, then increase the pH level by 1
-    if (soil_pH <= 5) {
-      soil_pH += 1; //increase the pH level by 1
-      console.log(soil_pH); //log the new pH level in the server console
+    } else if (soil_pH < 5) {
+      pH_change_info = "The soil pH is fine.";
     }
 
     //use call.write to send the new soil_pH and pH_change_info to the client
@@ -27,10 +23,37 @@ function MonitorSoilpH(call) {
     //if client cancells the request by pressing control + c, then log the message in the server console
     console.log("Client cancelled soil pH monitoring service"); //log this as well to indicate that the client cancelled the request
     call.end();
+    // If the client ends the call, clear the interval to stop sending updates
+    clearInterval(uvInterval);
+  });
+}
+
+function AdjustSoilpH(call, callback) {
+  console.log("Starting soil pH adjustment service");
+
+  // Process client requests
+  call.on("data", function (adjustmentRequest) {
+    var soil_pH = Math.random() * 10;
+
+    if (adjustmentRequest.adjustment_instructions == "yes") {
+      console.log("Adding fertilizer to the soil");
+    } else {
+      console.log("No adjustment needed");
+    }
+
+    // Send the new soil_pH to the client
+    call.write({ soil_pH });
+  });
+
+  // Handle client cancellation
+  call.on("end", function () {
+    console.log("Client cancelled soil pH adjustment service");
+    call.end();
   });
 }
 
 // Export the service method so it can be used in the server
 module.exports = {
   MonitorSoilpH,
+  AdjustSoilpH,
 };

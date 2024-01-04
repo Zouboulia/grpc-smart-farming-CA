@@ -222,9 +222,38 @@ function startPHMonitoringService() {
     crop_type,
   };
 
+  // Call MonitorSoilpH function
   clientPH.MonitorSoilpH(payload).on("data", function (response) {
     console.log(response);
   });
+
+  // Call AdjustSoilpH function
+  var adjustment_instructions = readlineSync.question(
+    "Do you want to adjust the soil pH? (yes or no): "
+  );
+
+  // check that user enters correct input for adjustment_instructions
+  if (!["yes", "no"].includes(adjustment_instructions)) {
+    //if user enters anything other than yes or no, throw an error
+    throw new Error(
+      "The adjustment instructions you entered are not valid. Please enter 'yes' or 'no' "
+    );
+  }
+
+  // Create a writable stream for sending data to the server
+  const stream = clientPH.AdjustSoilpH(function (err, response) {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.log(response);
+  });
+
+  // Send the adjustment instructions to the server
+  stream.write({ adjustment_instructions });
+
+  // Signal the end of the stream
+  stream.end();
 }
 
 //third service: UVLightMonitoring service
