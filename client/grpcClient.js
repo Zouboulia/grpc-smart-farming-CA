@@ -294,11 +294,3 @@ switch (service) {
     ); //log error message to console if user enters invalid service
     break;
 }
-
-// Export functions
-module.exports = {
-  startSatelliteCropHealthService,
-  analyzeCropHealth,
-  monitorBugInfestation,
-  monitorSunlightExposure,
-};

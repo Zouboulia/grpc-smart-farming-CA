@@ -9,25 +9,30 @@
     <p>Welcome to <%= title %></p>
     <button onclick="startMonitorSoilPH()">Start Soil PH monitoring</button>
 
+    <br />
+
     <button onclick="window.location.href='/'">Back to Home</button>
     <script>
       // Function to start Soil PH monitoring
       async function startMonitorSoilPH() {
         const location = prompt("Choose location of the crop field: A or B:");
-        const cropType = prompt(
+        const crop_type = prompt(
           "Enter the type of crop: Rice, Wheat, or Corn:"
         );
 
-        const response = await fetch("/monitorSoilPHData", {
+        console.log("Location:", location);
+        console.log("Crop Type:", crop_type);
+
+        fetch("/monitorSoilPHData", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ location, cropType }),
-        });
-
-        const result = await response.json();
-        console.log(result);
+          body: JSON.stringify({ location, crop_type }),
+        })
+          .then((response) => response.json())
+          .then((result) => console.log(result))
+          .catch((error) => console.error("Error:", error));
       }
     </script>
   </body>

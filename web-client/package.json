@@ -12,8 +12,11 @@
     "debug": "~2.6.9",
     "ejs": "~2.6.1",
     "express": "~4.16.1",
+    "google-protobuf": "^3.21.2",
+    "grpc-web-client": "^0.7.0",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
+    "node-fetch": "^2.7.0",
     "readline-sync": "^1.4.10"
   }
 }

@@ -45,14 +45,24 @@ function AnalyzeCropHealth(call, callback) {
     return;
   }
 
+  //if location and crop type are not valid, then throw error
+  if (
+    !["A", "B"].includes(call.request.location.toUpperCase()) ||
+    !["Rice", "Wheat", "Corn"].includes(call.request.crop_type)
+  ) {
+    console.error("Invalid request, please check entered data:", call.request);
+    callback({
+      code: grpc.status.INVALID_ARGUMENT,
+      details: "Invalid request data",
+    });
+    return;
+  }
+
   var location = call.request.location;
   var crop_type = call.request.crop_type;
 
   // some logic to determine health status based on location and crop type
   var health_status;
-
-  // Log the health status in the server console
-  console.log("Health Status:", health_status);
 
   switch (location) {
     //if location is A
@@ -70,7 +80,9 @@ function AnalyzeCropHealth(call, callback) {
       }
       break;
     default:
-      health_status = "Healthy";
+      console.log(
+        "You did not choose valid data, please choose A or B for location and Rice, Wheat, or Corn for crop type "
+      );
   }
 
   // Log the health status in the server console
