@@ -26,26 +26,29 @@
           console.log("Location:", location);
           console.log("Crop Type:", crop_type);
 
-          fetch("/monitorUVLightData", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ location, crop_type }),
-          })
-            .then((response) => response.json())
-            .then((result) => {
-              console.log(result);
-              document.getElementById("uvLightResponse").innerHTML =
-                "<p>UV Light Monitoring Response: " +
-                JSON.stringify(result) +
-                "</p>";
+          //create a timer to call the API every 5 seconds to fetch the data on web page
+          setInterval(() => {
+            fetch("/monitorUVLightData", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ location, crop_type }),
             })
-            .catch((error) => {
-              console.error("Error:", error);
-              document.getElementById("uvLightResponse").innerHTML =
-                "<p>Error: An error occurred.</p>";
-            });
+              .then((response) => response.json())
+              .then((result) => {
+                console.log(result);
+                document.getElementById("uvLightResponse").innerHTML =
+                  "<p>UV Light Monitoring Response: " +
+                  JSON.stringify(result) +
+                  "</p>";
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+                document.getElementById("uvLightResponse").innerHTML =
+                  "<p>Error: An error occurred.</p>";
+              });
+          }, 5000);
         }
       </script>
     </body>

@@ -93,7 +93,10 @@ router.post("/monitorSoilPHData", function (req, res) {
     })
     .on("data", (response) => {
       console.log("Response: ", response); //if no error, log the response to the console
-      res.json(response);
+      if (!res.headersSent) {
+        //if headers have not been sent, send the response
+        res.json(response);
+      }
     })
     // handle errors
     .on("error", (err) => {
@@ -105,7 +108,9 @@ router.post("/monitorSoilPHData", function (req, res) {
     // handle end of stream
     .on("end", () => {
       console.log("Stream ended");
-      res.end();
+      if (!res.headersSent) {
+        res.end();
+      }
     });
 
   // //call adjust soil pH function and send data to client
@@ -138,7 +143,10 @@ router.post("/monitorUVLightData", function (req, res) {
     })
     .on("data", (response) => {
       console.log("Response: ", response); //if no error, log the response to the console
-      res.json(response);
+      if (!res.headersSent) {
+        //if headers have not been sent, send the response
+        res.json(response);
+      }
     })
     //handle errors
     .on("error", (err) => {
@@ -150,7 +158,10 @@ router.post("/monitorUVLightData", function (req, res) {
     //handle end of stream
     .on("end", () => {
       console.log("Stream ended");
-      res.end();
+      if (!res.headersSent) {
+        //if headers have not been sent, send the response
+        res.end();
+      }
     });
 });
 

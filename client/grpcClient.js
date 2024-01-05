@@ -1,5 +1,6 @@
 // Import necessary modules
 var readlineSync = require("readline-sync");
+var readline = require("readline");
 var grpc = require("@grpc/grpc-js");
 var protoLoader = require("@grpc/proto-loader");
 
@@ -295,9 +296,37 @@ function startUVLightMonitoringService() {
     crop_type,
   };
 
-  // Call UVLightMonitoring function
-  clientUV.MonitorUvLight(payload).on("data", function (response) {
-    console.log(response);
+  // Call MonitorUvLight function
+  var call = clientUV.MonitorUvLight(payload);
+
+  // listen for UV Light updates from the server
+  call.on("data", (response) => {
+    console.log("Received UV Light response from server: ", response);
+  });
+
+  //listen for end of stream from the server
+  call.on("end", () => {
+    console.log("Server ended UV Light monitoring stream");
+  });
+
+  //listen for errors
+  call.on("error", (err) => {
+    console.error(err);
+  });
+
+  var rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  rl.on("line", (input) => {
+    if (input.toLowerCase() === "quit") {
+      call.end();
+      rl.close();
+    } else {
+      // Send the message to the server
+      call.write({ message: input });
+    }
   });
 }
 

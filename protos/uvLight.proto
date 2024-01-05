@@ -15,6 +15,9 @@ message UvLightRequest {
 
   // Crop type (Rice, Wheat, Corn, etc...)
   string crop_type = 2;
+
+  //message from Client
+  string message = 3;
 }
 
 // Response message for UV Light monitoring
